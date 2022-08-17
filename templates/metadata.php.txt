@@ -1,0 +1,30 @@
+<?php
+
+use __CORENAMESPACE__;
+
+$sMetadataVersion = '2.1';
+
+
+$aModule = [
+    'id'                      => Module::ID,
+    'title'                   => [
+        'de'                  => '',
+        'en'                  => ''
+    ],
+    'description'             => [
+        'de'                  => '',
+        'en'                  => ''
+    ],
+    'thumbnail'               => '',
+    'version'                 => Module::VERSION,
+    'author'                  => '__AUTHORNAME__',
+    'url'                     => '',
+    'email'                   => '__AUTHORMAIL__',
+    'controllers'             => [],
+    'templates'               => [],
+    'extend'                  => [],
+    'blocks'                  => [],
+    'events'                  => [],
+    'settings'                => [],
+    'smartyPluginDirectories' => []
+];

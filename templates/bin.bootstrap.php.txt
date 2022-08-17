@@ -1,0 +1,15 @@
+<?php
+/**
+ * This can be required if you want to run some CLI commands.
+ */
+
+$bootstrap = dirname(__DIR__, 4) . DIRECTORY_SEPARATOR . 'bootstrap.php';
+if (!file_exists($bootstrap)) {
+    $bootstrap = [dirname(__DIR__, 4), 'source', 'bootstrap.php'];
+    $bootstrap = implode(DIRECTORY_SEPARATOR, $bootstrap);
+    if (!file_exists($bootstrap)) {
+        die("\nFailed to load OXID bootstrap! ($bootstrap) \n\n");
+    }
+}
+
+require_once $bootstrap;

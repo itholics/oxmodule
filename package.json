@@ -1,0 +1,18 @@
+{
+  "name": "oxmodule",
+  "version": "0.1.0",
+  "description": "Create oXID module template/skeleton",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "oxid"
+  ],
+  "author": "info@itholics.de",
+  "license": "ISC",
+  "bin": "index.js",
+  "dependencies": {
+    "prompt-sync": "^4.2.0"
+  }
+}

@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+cd ../../../../../
+
+COMPOSER_MEMORY_LIMIT=-1 composer config repositories.__VENDOR__ path "source/modules/__TVENDOR__/*"
+COMPOSER_MEMORY_LIMIT=-1 composer require __VENDOR__/__MODULE__ -n --no-scripts
+vendor/bin/oe-console oe:module:install-configuration source/modules/__TVENDOR__/__TMODULE__

@@ -1,0 +1,9 @@
+<?php
+
+namespace __ROOTNAMESPACE__\Application\Core;
+
+class Module
+{
+    public const ID = '__ID__';
+    public const VERSION = '__VERSION__';
+}

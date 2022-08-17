@@ -1,0 +1,23 @@
+{
+  "name": "__VENDOR__/__MODULE__",
+  "description": "",
+  "type": "oxideshop-module",
+  "version": "__VERSION__",
+  "keywords": [
+    "oxid",
+    "modules",
+    "eShop"
+  ],
+  "authors": [__AUTHOR__]
+  "extra": {
+    "oxideshop": {
+      "target-directory": "__TVENDOR__/__TMODULE__"
+    }
+  },
+  "require": {},
+  "autoload": {
+    "psr-4": {
+      "__NAMESPACE__": "./"
+    }
+  }
+}

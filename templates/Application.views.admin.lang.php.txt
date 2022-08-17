@@ -1,0 +1,7 @@
+<?php
+
+$sLangName = '__NAME__';
+
+$aLang     = [
+    'charset'                => 'UTF-8',
+];

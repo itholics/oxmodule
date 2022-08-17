@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+cd ../../../../../
+
+if [ $1 ]
+then
+  COMPOSER_MEMORY_LIMIT=-1 composer update __VENDOR__/__MODULE__ -n --no-scripts
+fi
+vendor/bin/oe-console oe:module:install-configuration source/modules/__TVENDOR__/__TMODULE__
+vendor/bin/oe-console oe:module:deactivate __ID__
+vendor/bin/oe-console oe:module:activate __ID__
