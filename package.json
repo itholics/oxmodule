@@ -1,6 +1,6 @@
 {
   "name": "oxmodule",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Create oXID module template/skeleton",
   "main": "index.js",
   "scripts": {
