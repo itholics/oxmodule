@@ -14,9 +14,7 @@ function prompt(what) {
 }
 
 function template(p) {
-  const val = path.resolve(__dirname, p)
-  console.info('valis', val)
-  return val
+  return path.resolve(__dirname, p)
 }
 
 
