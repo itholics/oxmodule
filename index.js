@@ -13,6 +13,13 @@ function prompt(what) {
   return res;
 }
 
+function template(p) {
+  const val = path.resolve(__dirname, p)
+  console.info('valis', val)
+  return val
+}
+
+
 function getComposerName() {
   const name = prompt('Composer name <vendor>/<name>: ').trim()
   const parts = name.split('/').filter(n => n.trim())
@@ -114,24 +121,24 @@ function setupBin(data) {
     fs.mkdirSync(dir, {recursive: true})
   }
   // bootstrap.php
-  let file = fs.readFileSync('templates/bin.bootstrap.php.txt', ENCODING).toString()
+  let file = fs.readFileSync(template('templates/bin.bootstrap.php.txt'), ENCODING).toString()
   let wfile = path.resolve(dir, 'bootstrap.php')
   console.info(`Writing "bootstrap.php" to ${wfile} ...`)
   fs.writeFileSync(wfile, file, ENCODING)
   // install.sh
-  file = fs.readFileSync('templates/bin.install.sh.txt', ENCODING).toString()
+  file = fs.readFileSync(template('templates/bin.install.sh.txt'), ENCODING).toString()
   file = updateData(file, data)
   wfile = path.resolve(dir, 'install.sh')
   console.info(`Writing "install.sh" to ${wfile} ...`)
   fs.writeFileSync(wfile, file, ENCODING)
   // remove.sh
-  file = fs.readFileSync('templates/bin.remove.sh.txt', ENCODING).toString()
+  file = fs.readFileSync(template('templates/bin.remove.sh.txt'), ENCODING).toString()
   file = updateData(file, data)
   wfile = path.resolve(dir, 'remove.sh')
   console.info(`Writing "remove.sh" to ${wfile} ...`)
   fs.writeFileSync(wfile, file, ENCODING)
   // update.sh
-  file = fs.readFileSync('templates/bin.update.sh.txt', ENCODING).toString()
+  file = fs.readFileSync(template('templates/bin.update.sh.txt'), ENCODING).toString()
   file = updateData(file, data)
   wfile = path.resolve(dir, 'update.sh')
   console.info(`Writing "update.sh" to ${wfile} ...`)
@@ -140,7 +147,7 @@ function setupBin(data) {
 
 function setupComposer(data) {
   console.info(`Setting up composer.json`)
-  let file = fs.readFileSync('templates/composer.json.txt', ENCODING)
+  let file = fs.readFileSync(template('templates/composer.json.txt'), ENCODING)
   file = updateData(file, data)
   if (data.aName || data.aMail) {
     let author = []
@@ -162,7 +169,7 @@ function setupComposer(data) {
 
 function setupMetadata(data) {
   console.info('Setting update metadata.php')
-  let file = fs.readFileSync('templates/metadata.php.txt', ENCODING)
+  let file = fs.readFileSync(template('templates/metadata.php.txt'), ENCODING)
   file = updateData(file, data)
   const namespace = [...data.namespaces, 'Application', 'Core', 'Module'].join('\\')
   file = file.replace(/__CORENAMESPACE__/g, namespace)
@@ -176,7 +183,7 @@ function setupCoreModule(data) {
   const dir = path.resolve(data.path, 'Application', 'Core')
   console.info(`Creating Core-Application folder: ${dir}`)
   fs.mkdirSync(dir, {recursive: true})
-  let file = fs.readFileSync('templates/Application.Core.Module.php.txt', ENCODING)
+  let file = fs.readFileSync(template('templates/Application.Core.Module.php.txt'), ENCODING)
   file = updateData(file, data)
   const wfile = path.resolve(dir, 'Module.php')
   console.info(`Writing "Module.php" to ${wfile}`)
@@ -210,7 +217,7 @@ function setupAdminTranslations(data) {
   for (let [lang, full] of info) {
     const dir = path.resolve(data.path, 'Application', 'views', 'admin', lang)
     const wfile = path.resolve(data.path, 'Application', 'views', 'admin', lang, `${data.id}_admin_${lang}_lang.php`)
-    let file = fs.readFileSync(path.resolve('templates/Application.views.admin.lang.php.txt'), ENCODING).replace(/__NAME__/g, full)
+    let file = fs.readFileSync(template('templates/Application.views.admin.lang.php.txt'), ENCODING).replace(/__NAME__/g, full)
     console.info(`Setting up admin language "${full}" to ${wfile}`)
     !fs.existsSync(dir) && fs.mkdirSync(dir, {recursive: true})
     fs.writeFileSync(wfile, file, ENCODING)
@@ -256,7 +263,7 @@ function setupTranslations(data) {
     const full = t[lang]
     const dir = path.resolve(data.path, 'Application', 'translations', lang)
     const wfile = path.resolve(data.path, 'Application', 'translations', lang, `${data.id}_${lang}_lang.php`)
-    const file = fs.readFileSync(path.resolve('templates/Application.views.admin.lang.php.txt'), ENCODING).replace(/__NAME__/g, full)
+    const file = fs.readFileSync(template('templates/Application.views.admin.lang.php.txt'), ENCODING).replace(/__NAME__/g, full)
     console.info(`Writing translation ${full} (${lang}) to ${wfile}`)
     !fs.existsSync(dir) && fs.mkdirSync(dir, {recursive: true})
     fs.writeFileSync(wfile, file, ENCODING)
