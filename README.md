@@ -1,4 +1,4 @@
-# oxmodule
+# [ITholics'](https://www.itholics.de) oxmodule
 
 ## Introduction
 
@@ -8,10 +8,21 @@ Helper to create module (v2.1) skeleton for [oXID](https://www.oxid-esales.com/)
 You may install it globally:
 
     npm install -g oxmodule
+    oxmodule
 
 or better:
     
     npx oxmodule
+
+If the module structure is like:
+- modules
+  - vendor
+    - module_name1
+    - module_name2
+  
+You will be asked for the installation path (defaults to current directory). You can provide the `modules/` or `modules/vendor/` if 
+the target-directory is f.e. `vendor/module_name3`. Tt will add the module_name3 to the vendor folder.
+If the vendor das not exist, you must provide the `modules/` folder.
 
 In the process of creation it will ask you some questions about the module you like to create:
 - composer naming

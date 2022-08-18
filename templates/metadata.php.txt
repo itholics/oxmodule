@@ -24,7 +24,10 @@ $aModule = [
     'templates'               => [],
     'extend'                  => [],
     'blocks'                  => [],
-    'events'                  => [],
+    'events'                  => [
+        'onActivate'   => Module::class . '::onActivate',
+        'onDeactivate' => Module::class . '::onDeactivate',
+    ],
     'settings'                => [],
     'smartyPluginDirectories' => []
 ];

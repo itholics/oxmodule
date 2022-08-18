@@ -6,4 +6,25 @@ class Module
 {
     public const ID = '__ID__';
     public const VERSION = '__VERSION__';
+
+    protected static $__instance;
+
+    public static function getInstance()
+    {
+        return static::$__instance ?? (oxNew(static::class));
+    }
+
+    public static function onActivate(): void
+    {
+        static::getInstance()->activate();
+    }
+
+    public static function onDeactivate(): void
+    {
+        static::getInstance()->deactivate();
+    }
+
+    public function activate(): void {}
+
+    public function deactivate(): void {}
 }
