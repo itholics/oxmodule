@@ -4,7 +4,7 @@ cd ../../../../../
 
 if [ $1 ]
 then
-  COMPOSER_MEMORY_LIMIT=-1 composer update __VENDOR__/__MODULE__ -n --no-scripts
+  COMPOSER_MEMORY_LIMIT=-1 composer update __VENDOR__/__MODULE__ -n --no-scripts --no-dev
 fi
 vendor/bin/oe-console oe:module:install-configuration source/modules/__TVENDOR__/__TMODULE__
 vendor/bin/oe-console oe:module:deactivate __ID__

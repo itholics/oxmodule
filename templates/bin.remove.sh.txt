@@ -3,5 +3,5 @@
 cd ../../../../../
 
 vendor/bin/oe-console oe:module:deactivate __ID__
-vendor/bin/oe-console oe:module:uninstall-configuration source/modules/__TVENDOR__/__TMODULE__
-COMPOSER_MEMORY_LIMIT=-1 composer remove __VENDOR__/__MODULE__ -n --no-scripts
+vendor/bin/oe-console oe:module:uninstall-configuration __ID__
+COMPOSER_MEMORY_LIMIT=-1 composer remove __VENDOR__/__MODULE__ -n --no-scripts --update-no-dev

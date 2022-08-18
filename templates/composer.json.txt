@@ -8,7 +8,7 @@
     "modules",
     "eShop"
   ],
-  "authors": [__AUTHOR__]
+  "authors": [__AUTHOR__],
   "extra": {
     "oxideshop": {
       "target-directory": "__TVENDOR__/__TMODULE__"
