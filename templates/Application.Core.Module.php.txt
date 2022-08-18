@@ -11,7 +11,7 @@ class Module
 
     public static function getInstance()
     {
-        return static::$__instance ?? (oxNew(static::class));
+        return static::$__instance ?? (static::$__instance = oxNew(static::class));
     }
 
     public static function onActivate(): void
