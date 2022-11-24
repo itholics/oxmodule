@@ -4,6 +4,7 @@ const path = require('path')
 const fs = require('fs')
 
 const ENCODING = 'utf8'
+let ITH_MODE = false;
 
 function prompt(what) {
   let res = prompter(what);
@@ -69,6 +70,25 @@ function getModulePath(vendor, name) {
   return p
 }
 
+function getIthMode(vendorDir, moduleDir) {
+  ITH_MODE = Boolean(prompt('Use ITholics related meta? (default=no, anythink=yes): '))
+  if (ITH_MODE) {
+    return [true, {
+      title: `<div style=\\"display:flex; align-items: center;\\"><img src=\\"../modules/${vendorDir}/${moduleDir}/out/thumb.png\\" alt=\\"ith\\" title=\\"ITholics\\" style=\\"height: 15px; margin-right: 5px;\\" /> <span><strong>IT</strong>holics - Your Module  - {$sVersion}</span></div>`,
+      url: 'https://www.itholics.de',
+      logo: 'out/logo.png',
+      aName: 'ITholics Dev Team',
+      aMail: 'info@itholics.de',
+      version: '1.0.0'
+    }]
+  }
+  return [false, {
+    title: '',
+    url: '',
+    logo: ''
+  }];
+}
+
 function getVersion() {
   return prompt('Version (default="1.0.0"): ').trim() || '1.0.0'
 }
@@ -96,9 +116,12 @@ function updateData(str, data) {
     .replace(/__ID__/g, data.id)
     .replace(/__VERSION__/g, data.version)
     .replace(/__NAMESPACE__/g, data.namespace + '\\\\')
-    .replace(/__AUTHORNAME__/g, data.aName)
-    .replace(/__AUTHORMAIL__/g, data.aMail)
+    .replace(/__AUTHORNAME__/g, data?.aName ?? '')
+    .replace(/__AUTHORMAIL__/g, data?.aMail ?? '')
     .replace(/__ROOTNAMESPACE__/g, data.namespaces.join('\\'))
+    .replace(/__URL__/g, data?.url ?? '')
+    .replace(/__LOGO__/g, data?.logo ?? '')
+    .replace(/__TITLE__/g, data?.title ?? '')
 }
 
 function setupRoot(data) {
@@ -141,6 +164,17 @@ function setupBin(data) {
   wfile = path.resolve(dir, 'update.sh')
   console.info(`Writing "update.sh" to ${wfile} ...`)
   fs.writeFileSync(wfile, file, ENCODING)
+}
+
+function setupItholics(data) {
+  if (ITH_MODE) {
+    // copy files...
+    console.info('Copy ITholics images to /out path')
+    let dir = path.resolve(data.path, 'out')
+    fs.copyFileSync(template('templates/logo.png'), path.resolve(dir, 'logo.png'))
+    fs.copyFileSync(template('templates/thumb.png'), path.resolve(dir, 'thumb.png'))
+    fs.copyFileSync(template('templates/thumb_white.png'), path.resolve(dir, 'thumb_white.png'))
+  }
 }
 
 function setupComposer(data) {
@@ -278,6 +312,7 @@ function setup(data) {
   setupRoot(data)
   setupBin(data)
   setupFolders(data)
+  setupItholics(data)
   setupComposer(data)
   setupMetadata(data)
   setupCoreModule(data)
@@ -296,11 +331,19 @@ function main() {
   const _id = getModuleId(..._idList)
   const _path = getModulePath(_tvendor, _tname)
   console.info(`Current data till now: composer="${_cfull}" target-dir="${_tfull}" id="${_id}" path="${_path}"`)
-  
-  const _version = getVersion()
-  const [_aName, _aMail] = getAuthor()
+  const [isIth, ith] = getIthMode(_tvendor, _tname)
+  let _version = '', _aName = '', _aMail = '';
+  if (!isIth) {
+    _version = getVersion()
+      [_aName, _aMail] = getAuthor()
+  } else {
+    _version = ith.version
+    _aName = ith.aName
+    _aMail = ith.aMail
+  }
   const [_namespace, _namespaces] = getNamespace()
   console.info(`Values: version="${_version}" author="${_aName}" email="${_aMail}" namespace="${_namespace}"`)
+  
   if (prompt('Do you want to process and creating the files? (default=yes, anythink=no): ')) {
     console.info('Aborted by user')
     return
@@ -318,7 +361,8 @@ function main() {
     aName: _aName,
     aMail: _aMail,
     namespace: _namespace,
-    namespaces: _namespaces
+    namespaces: _namespaces,
+    ...ith
   }
   setup(data)
 }
@@ -328,11 +372,11 @@ function interruptHandler() {
     const rl = require('readline').createInterface({
       input: process.stdin,
       output: process.stdout
-    }).on('SIGINT', function() {
+    }).on('SIGINT', function () {
       process.emit('SIGINT')
     })
   }
-  process.on('SIGINT', function() {
+  process.on('SIGINT', function () {
     console.info('User aborted...')
     process.exit()
   })

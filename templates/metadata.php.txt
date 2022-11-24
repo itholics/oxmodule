@@ -4,21 +4,22 @@ use __CORENAMESPACE__;
 
 $sMetadataVersion = '2.1';
 
+$sVersion = Module::VERSION;
 
 $aModule = [
     'id'                      => Module::ID,
     'title'                   => [
-        'de'                  => '',
-        'en'                  => ''
+        'de'                  => "__TITLE__",
+        'en'                  => "__TITLE__"
     ],
     'description'             => [
         'de'                  => '',
         'en'                  => ''
     ],
-    'thumbnail'               => '',
-    'version'                 => Module::VERSION,
+    'thumbnail'               => '__LOGO__',
+    'version'                 => $sVersion,
     'author'                  => '__AUTHORNAME__',
-    'url'                     => '',
+    'url'                     => '__URL__',
     'email'                   => '__AUTHORMAIL__',
     'controllers'             => [],
     'templates'               => [],
