@@ -5,6 +5,7 @@ const fs = require('fs')
 
 const ENCODING = 'utf8'
 let ITH_MODE = false;
+const VERSIONS = ['< 7.0', '>= 7.0'];
 
 function prompt(what) {
   let res = prompter(what);
@@ -70,17 +71,22 @@ function getModulePath(vendor, name) {
   return p
 }
 
-function getIthMode(vendorDir, moduleDir) {
+function getIthMode(vendorDir, moduleDir, oxidVersion, id) {
   ITH_MODE = Boolean(prompt('Use ITholics related meta? (default=no, anythink=yes): '))
   if (ITH_MODE) {
-    return [true, {
+    const back = {
       title: `<div style=\\"display:flex; align-items: center;\\"><img src=\\"../modules/${vendorDir}/${moduleDir}/out/thumb.png\\" alt=\\"ith\\" title=\\"ITholics\\" style=\\"height: 15px; margin-right: 5px;\\" /> <span><strong>IT</strong>holics - Your Module  - {$sVersion}</span></div>`,
       url: 'https://www.itholics.de',
       logo: 'out/logo.png',
       aName: 'ITholics Dev Team',
       aMail: 'info@itholics.de',
       version: '1.0.0'
-    }]
+    }
+    if (oxidVersion === 1) {
+      back.logo = 'logo.png'
+      back.title = `<div style=\\"display:flex; align-items: center;\\"><img src=\\"/out/modules/${id}/thumb.png\\" alt=\\"ith\\" title=\\"ITholics\\" style=\\"height: 15px; margin-right: 5px;\\" /> <span><strong>IT</strong>holics - Your Module  - {$sVersion}</span></div>`
+    }
+    return [true, back]
   }
   return [false, {
     title: '',
@@ -103,9 +109,23 @@ function getNamespace() {
     console.warn('Missing value, please re-enter')
     return getNamespace()
   }
-  const arr = val.split(/\s+/).filter(n => n.trim())
+  const arr = val.split(/\s+/).filter(n => n.trim())  
   const full = arr.join('\\\\')
   return [full, arr]
+}
+
+function getOxidVersion() {
+  console.info('Choose your OXID version from following list')
+  for (const v of VERSIONS) {
+    console.info(`[${VERSIONS.indexOf(v)}] ${v}`)
+  }
+  const val = prompt('Choose your OXID version (default=0): ').trim() || '0'
+  const num = parseInt(val)
+  if (isNaN(num) || num < 0 || num >= VERSIONS.length) {
+    console.warn('Invalid value, please retry')
+    return getOxidVersion()
+  }
+  return num
 }
 
 function updateData(str, data) {
@@ -170,7 +190,17 @@ function setupItholics(data) {
   if (ITH_MODE) {
     // copy files...
     console.info('Copy ITholics images to /out path')
-    let dir = path.resolve(data.path, 'out')
+    let dir = null
+    switch(data.oxidVersion) {
+      case 0:
+        dir = path.resolve(data.path, 'out')
+        break
+      case 1:
+        dir = path.resolve(data.path, 'assets')
+        break
+      default:
+        throw new Error('Invalid OXID version found')
+    }
     fs.copyFileSync(template('templates/logo.png'), path.resolve(dir, 'logo.png'))
     fs.copyFileSync(template('templates/thumb.png'), path.resolve(dir, 'thumb.png'))
     fs.copyFileSync(template('templates/thumb_white.png'), path.resolve(dir, 'thumb_white.png'))
@@ -234,6 +264,16 @@ function setupFolders(data) {
     path.resolve(data.path, 'out'),
     path.resolve(data.path, 'Smarty', 'Plugin'),
   ]
+  switch (data.oxidVersion) {
+    case 0:
+      dirs.push(path.resolve(data.path, 'out'))
+      break
+    case 1:
+      dirs.push(path.resolve(data.path, 'assets'))
+      break
+    default:
+      throw new Error('Invalid OXID version found')
+  }
   for (let dir of dirs) {
     console.info(`Making folder structure: ${dir}`)
     fs.mkdirSync(dir, {recursive: true})
@@ -322,6 +362,7 @@ function setup(data) {
 }
 
 function main() {
+  const oxidVersion = getOxidVersion()
   const [_cvendor, _cname, _cfull] = getComposerName()
   const [_tvendor, _tname, _tfull] = getTargetDir(_cfull)
   const _idList = [_cname]
@@ -331,7 +372,7 @@ function main() {
   const _id = getModuleId(..._idList)
   const _path = getModulePath(_tvendor, _tname)
   console.info(`Current data till now: composer="${_cfull}" target-dir="${_tfull}" id="${_id}" path="${_path}"`)
-  const [isIth, ith] = getIthMode(_tvendor, _tname)
+  const [isIth, ith] = getIthMode(_tvendor, _tname, oxidVersion, _id)
   let _version = '', _aName = '', _aMail = '';
   if (!isIth) {
     _version = getVersion()
@@ -342,12 +383,14 @@ function main() {
     _aMail = ith.aMail
   }
   const [_namespace, _namespaces] = getNamespace()
-  console.info(`Values: version="${_version}" author="${_aName}" email="${_aMail}" namespace="${_namespace}"`)
+
+  console.info(`Values: version="${_version}" author="${_aName}" email="${_aMail}" namespace="${_namespace}" oxid-version="${VERSIONS[oxidVersion]}"`)
   
   if (prompt('Do you want to process and creating the files? (default=yes, anythink=no): ')) {
     console.info('Aborted by user')
     return
   }
+
   const data = {
     cvender: _cvendor,
     cname: _cname,
@@ -362,6 +405,7 @@ function main() {
     aMail: _aMail,
     namespace: _namespace,
     namespaces: _namespaces,
+    oxidVersion: oxidVersion,
     ...ith
   }
   setup(data)

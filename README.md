@@ -68,8 +68,12 @@ You should be in the `<SHOP>/source/modules` or `<SHOP>/source/modules/<YOUR_VEN
         - update.sh
         - remove.sh
       - docs
-      - out
+      - out (oxid `<7`)
+      - assets (oxid `>=7`)
       - Smarty
       - composer.json
       - metadata.php
       - README.md
+
+## Changelog
+[View Changelog here.](./CHANGELOG.md)
