@@ -257,7 +257,6 @@ function setupFolders(data) {
     path.resolve(data.path, 'Application', 'Controller', 'Admin'),
     path.resolve(data.path, 'Application', 'Component', 'Widget'),
     path.resolve(data.path, 'Application', 'Model'),
-    path.resolve(data.path, 'Application', 'views', 'admin', 'tpl'),
     path.resolve(data.path, 'Application', 'views', 'blocks'),
     path.resolve(data.path, 'Application', 'views', 'tpl'),
     path.resolve(data.path, 'docs'),
@@ -267,9 +266,12 @@ function setupFolders(data) {
   switch (data.oxidVersion) {
     case 0:
       dirs.push(path.resolve(data.path, 'out'))
+      dirs.push(path.resolve(data.path, 'Application', 'views', 'admin', 'tpl'))
       break
     case 1:
       dirs.push(path.resolve(data.path, 'assets'))
+      dirs.push(path.resolve(data.path, 'Application', 'views', 'admin_smarty', 'tpl'))
+      dirs.push(path.resolve(data.path, 'Application', 'views', 'admin_twig', 'tpl'))
       break
     default:
       throw new Error('Invalid OXID version found')
@@ -282,17 +284,31 @@ function setupFolders(data) {
 }
 
 function setupAdminTranslations(data) {
+  const dirs = []
+  switch(data.oxidVersion) {
+    case 0:
+      dirs.push('admin')
+      break
+    case 1:
+      dirs.push('admin_smarty')
+      dirs.push('admin_twig')
+      break
+    default:
+      throw new Error('setupAdminTranslations(): Invalid OXID version found')
+  }
   const info = [
     ['de', 'Deutsch'],
     ['en', 'English']
   ]
   for (let [lang, full] of info) {
-    const dir = path.resolve(data.path, 'Application', 'views', 'admin', lang)
-    const wfile = path.resolve(data.path, 'Application', 'views', 'admin', lang, `${data.id}_admin_${lang}_lang.php`)
-    let file = fs.readFileSync(template('templates/Application.views.admin.lang.php.txt'), ENCODING).replace(/__NAME__/g, full)
-    console.info(`Setting up admin language "${full}" to ${wfile}`)
-    !fs.existsSync(dir) && fs.mkdirSync(dir, {recursive: true})
-    fs.writeFileSync(wfile, file, ENCODING)
+    for (let adminDir of dirs) {
+      const dir = path.resolve(data.path, 'Application', 'views', adminDir, lang)
+      const wfile = path.resolve(data.path, 'Application', 'views', adminDir, lang, `${data.id}_admin_${lang}_lang.php`)
+      let file = fs.readFileSync(template('templates/Application.views.admin.lang.php.txt'), ENCODING).replace(/__NAME__/g, full)
+      console.info(`Setting up admin language "${full}" to ${wfile}`)
+      !fs.existsSync(dir) && fs.mkdirSync(dir, {recursive: true})
+      fs.writeFileSync(wfile, file, ENCODING)
+    }
   }
 }
 

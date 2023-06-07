@@ -55,7 +55,19 @@ You should be in the `<SHOP>/source/modules` or `<SHOP>/source/modules/<YOUR_VEN
           - it
             - `ID`_it_lang.php
         - views
-          - admin
+          - admin (oxid `<7`)
+            - de
+              - `ID`_admin_de_lang.php
+            - en
+              - `ID`_admin_en_lang.php
+            - tpl
+          - admin_smarty (oxid `>=7`)
+            - de
+              - `ID`_admin_de_lang.php
+            - en
+              - `ID`_admin_en_lang.php
+            - tpl
+          - admin_twig (oxid `>=7`)
             - de
               - `ID`_admin_de_lang.php
             - en
